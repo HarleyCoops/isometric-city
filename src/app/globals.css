@@ -4,40 +4,40 @@
 
 @layer base {
   :root {
-    /* Art Deco Metropolis Color Palette */
+    /* Minimal Blue Color Palette */
     --background: 220 20% 8%;
-    --foreground: 45 30% 92%;
+    --foreground: 210 20% 92%;
     
     --card: 220 18% 11%;
-    --card-foreground: 45 30% 92%;
+    --card-foreground: 210 20% 92%;
     
     --popover: 220 18% 11%;
-    --popover-foreground: 45 30% 92%;
+    --popover-foreground: 210 20% 92%;
     
-    /* Gold/Brass as primary - the signature Art Deco accent */
-    --primary: 43 74% 49%;
+    /* Mild blue as primary */
+    --primary: 210 60% 60%;
     --primary-foreground: 220 20% 8%;
     
     --secondary: 220 15% 15%;
-    --secondary-foreground: 45 30% 92%;
+    --secondary-foreground: 210 20% 92%;
     
     --muted: 220 15% 15%;
     --muted-foreground: 220 10% 55%;
     
     /* Teal accent for secondary highlights */
     --accent: 173 58% 39%;
-    --accent-foreground: 45 30% 92%;
+    --accent-foreground: 210 20% 92%;
     
     --destructive: 0 72% 51%;
-    --destructive-foreground: 45 30% 92%;
+    --destructive-foreground: 210 20% 92%;
     
     --border: 220 15% 20%;
     --input: 220 15% 18%;
-    --ring: 43 74% 49%;
+    --ring: 210 60% 60%;
     
     --sidebar: 220 20% 6%;
-    --sidebar-foreground: 45 30% 92%;
-    --sidebar-border: 43 74% 25%;
+    --sidebar-foreground: 210 20% 92%;
+    --sidebar-border: 210 60% 35%;
     
     --radius: 0.25rem;
   }
@@ -64,12 +64,12 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, hsl(43 74% 35%) 0%, hsl(43 74% 25%) 100%);
+  background: linear-gradient(180deg, hsl(210 60% 40%) 0%, hsl(210 60% 30%) 100%);
   border-radius: 0;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, hsl(43 74% 49%) 0%, hsl(43 74% 35%) 100%);
+  background: linear-gradient(180deg, hsl(210 60% 60%) 0%, hsl(210 60% 40%) 100%);
 }
 
 /* Art Deco Animations */
@@ -88,14 +88,14 @@
   to { opacity: 1; transform: translateX(0); }
 }
 
-@keyframes goldShimmer {
+@keyframes blueShimmer {
   0% { background-position: -200% center; }
   100% { background-position: 200% center; }
 }
 
 @keyframes pulseGlow {
-  0%, 100% { box-shadow: 0 0 20px rgba(201, 155, 60, 0.2); }
-  50% { box-shadow: 0 0 40px rgba(201, 155, 60, 0.4); }
+  0%, 100% { box-shadow: 0 0 20px rgba(96, 165, 250, 0.2); }
+  50% { box-shadow: 0 0 40px rgba(96, 165, 250, 0.4); }
 }
 
 @keyframes float {
@@ -120,14 +120,14 @@
   animation: slideInRight 0.5s ease-out;
 }
 
-.animate-goldShimmer {
+.animate-blueShimmer {
   background: linear-gradient(90deg, 
-    hsl(43 74% 49%) 0%, 
-    hsl(48 90% 70%) 50%, 
-    hsl(43 74% 49%) 100%
+    hsl(210 60% 60%) 0%, 
+    hsl(210 80% 70%) 50%, 
+    hsl(210 60% 60%) 100%
   );
   background-size: 200% auto;
-  animation: goldShimmer 3s linear infinite;
+  animation: blueShimmer 3s linear infinite;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -150,13 +150,13 @@
   font-family: var(--font-sans), system-ui, sans-serif;
 }
 
-/* Gold gradient text */
-.text-gold {
+/* Blue gradient text */
+.text-blue {
   background: linear-gradient(135deg, 
-    hsl(43 74% 55%) 0%, 
-    hsl(48 90% 70%) 30%,
-    hsl(43 74% 49%) 60%,
-    hsl(38 70% 40%) 100%
+    hsl(210 60% 65%) 0%, 
+    hsl(210 80% 75%) 30%,
+    hsl(210 60% 60%) 60%,
+    hsl(210 50% 50%) 100%
   );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -177,8 +177,8 @@
   height: 2px;
   background: linear-gradient(90deg, 
     transparent 0%, 
-    hsl(43 74% 49%) 20%, 
-    hsl(43 74% 49%) 80%, 
+    hsl(210 60% 60%) 20%, 
+    hsl(210 60% 60%) 80%, 
     transparent 100%
   );
 }
@@ -193,7 +193,7 @@
   position: absolute;
   width: 24px;
   height: 24px;
-  border-color: hsl(43 74% 35%);
+  border-color: hsl(210 60% 40%);
   border-style: solid;
 }
 
@@ -209,13 +209,13 @@
   border-width: 0 2px 2px 0;
 }
 
-/* Art Deco Card styling */
+/* Card styling */
 .deco-card {
   background: linear-gradient(135deg, 
     hsl(220 18% 11%) 0%, 
     hsl(220 20% 9%) 100%
   );
-  border: 1px solid hsl(43 74% 20%);
+  border: 1px solid hsl(210 60% 25%);
   position: relative;
 }
 
@@ -226,7 +226,7 @@
   left: 6px;
   right: 6px;
   bottom: 6px;
-  border: 1px solid hsl(43 74% 15%);
+  border: 1px solid hsl(210 60% 20%);
   pointer-events: none;
 }
 
