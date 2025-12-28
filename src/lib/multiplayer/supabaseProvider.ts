@@ -18,10 +18,28 @@ import {
 import { GameState } from '@/types/game';
 import { msg } from 'gt-next';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!;
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
 
-const supabase = createClient(supabaseUrl, supabaseKey);
+// Lazy initialization to avoid errors when env vars are not set
+let supabaseClient: ReturnType<typeof createClient> | null = null;
+
+function getSupabase() {
+  if (!supabaseUrl || !supabaseKey) {
+    throw new Error('Supabase is not configured. Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY to enable multiplayer.');
+  }
+  if (!supabaseClient) {
+    supabaseClient = createClient(supabaseUrl, supabaseKey);
+  }
+  return supabaseClient;
+}
+
+/**
+ * Check if Supabase is configured for multiplayer
+ */
+export function isSupabaseConfigured(): boolean {
+  return !!supabaseUrl && !!supabaseKey;
+}
 
 // Throttle state saves to avoid excessive database writes
 const STATE_SAVE_INTERVAL = 3000; // Save state every 3 seconds max
@@ -76,7 +94,7 @@ export class MultiplayerProvider {
     this.players.set(this.peerId, this.player);
 
     // Create Supabase Realtime channel
-    this.channel = supabase.channel(`room-${options.roomCode}`, {
+    this.channel = getSupabase().channel(`room-${options.roomCode}`, {
       config: {
         presence: { key: this.peerId },
         broadcast: { self: false }, // Don't receive our own broadcasts
@@ -296,7 +314,7 @@ export class MultiplayerProvider {
     }
     
     this.channel.unsubscribe();
-    supabase.removeChannel(this.channel);
+    getSupabase().removeChannel(this.channel);
   }
 }
 

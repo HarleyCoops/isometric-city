@@ -37,10 +37,28 @@ import { compressToEncodedURIComponent, decompressFromEncodedURIComponent } from
 import { GameState } from '@/types/game';
 import { serializeAndCompressForDBAsync } from '@/lib/saveWorkerManager';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!;
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
 
-const supabase = createClient(supabaseUrl, supabaseKey);
+// Lazy initialization to avoid errors when env vars are not set
+let supabaseClient: ReturnType<typeof createClient> | null = null;
+
+function getSupabase() {
+  if (!supabaseUrl || !supabaseKey) {
+    throw new Error('Supabase is not configured. Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY to enable multiplayer.');
+  }
+  if (!supabaseClient) {
+    supabaseClient = createClient(supabaseUrl, supabaseKey);
+  }
+  return supabaseClient;
+}
+
+/**
+ * Check if Supabase is configured for multiplayer
+ */
+export function isSupabaseConfigured(): boolean {
+  return !!supabaseUrl && !!supabaseKey;
+}
 
 export interface GameRoomRow {
   room_code: string;
@@ -64,7 +82,7 @@ export async function createGameRoom(
     // PERF: Both JSON.stringify and lz-string compression happen in the worker
     const compressed = await serializeAndCompressForDBAsync(gameState);
     
-    const { error } = await supabase
+    const { error } = await getSupabase()
       .from('game_rooms')
       .insert({
         room_code: roomCode.toUpperCase(),
@@ -92,7 +110,7 @@ export async function loadGameRoom(
   roomCode: string
 ): Promise<{ gameState: GameState; cityName: string } | null> {
   try {
-    const { data, error } = await supabase
+    const { data, error } = await getSupabase()
       .from('game_rooms')
       .select('game_state, city_name')
       .eq('room_code', roomCode.toUpperCase())
@@ -129,7 +147,7 @@ export async function updateGameRoom(
     // PERF: Both JSON.stringify and lz-string compression happen in the worker
     const compressed = await serializeAndCompressForDBAsync(gameState);
     
-    const { error } = await supabase
+    const { error } = await getSupabase()
       .from('game_rooms')
       .update({ game_state: compressed })
       .eq('room_code', roomCode.toUpperCase());
@@ -151,7 +169,7 @@ export async function updateGameRoom(
  */
 export async function roomExists(roomCode: string): Promise<boolean> {
   try {
-    const { data, error } = await supabase
+    const { data, error } = await getSupabase()
       .from('game_rooms')
       .select('room_code')
       .eq('room_code', roomCode.toUpperCase())
@@ -171,7 +189,7 @@ export async function updatePlayerCount(
   count: number
 ): Promise<void> {
   try {
-    await supabase
+    await getSupabase()
       .from('game_rooms')
       .update({ player_count: count })
       .eq('room_code', roomCode.toUpperCase());
